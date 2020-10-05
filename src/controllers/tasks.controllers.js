@@ -1,19 +1,42 @@
-exports.listTasks = ((req,res)=>{
-    res.send('List')
-})
+const tasksModel = require('../models/tasks.model')
 
-exports.listTaskById = ((req,res)=>{
-    res.send('List task by id')
-})
+exports.listTasks = async(req,res)=>{
+    await tasksModel.find({},(err,tasks)=>{
+    if(err)
+        res.send(err)
+    res.json(tasks)
+    })
+}
 
-exports.createTask = ((req,res)=>{
-    res.send('Create task')
-})
+exports.listTaskById = async(req,res)=>{
+    await tasksModel.findById({_id: req.params.id},(err,tasks)=>{
+    if(err)
+        res.send(err)
+    res.json(tasks)
+    })
+}
 
-exports.updateTaskById = ((req,res)=>{
-    res.send('Update task by id')
-})
+exports.createTask = async(req,res)=>{
+    const newTask = new tasksModel(req.body)
+    await newTask.save((err, task)=>{
+        if(err)
+            res.send(err)
+        res.json(task)
+    })
+}
 
-exports.deleteTaskById = ((req,res)=>{
-    res.send('Delete task by id')
-})
+exports.updateTaskById = async(req,res)=>{
+    await tasksModel.findOneAndUpdate({_id: req.params.id}, req.body, {new: true},(err, task)=>{
+        if(err)
+            res.send(err)
+        res.json(task)
+    })
+}
+
+exports.deleteTaskById = async(req,res)=>{
+    tasksModel.findOneAndDelete({_id: req.params.id}, (err)=>{
+        if(err)
+            res.send(err)
+        res.json({message: "Task removed"})
+    })
+}
