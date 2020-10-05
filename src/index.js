@@ -7,9 +7,7 @@ const app = express();
 app.set('port', process.env.PORT || 3000);
 
 //Routes
-app.get('/',(req,res)=>{
-    res.send('Home Page - ToDo Project')
-});
+app.use('/tasks', require('./routes/tasks.routes'));
 
 //Start server
 app.listen(app.get('port'),()=>{
